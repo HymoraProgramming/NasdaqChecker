@@ -1,0 +1,24 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace NasdaqChecker
+{
+    public class NasdaqCompany
+    {
+        public string Symbol { get; set; }
+        public string Name { get; set; }
+        public double MarketCap { get; set; }
+        public double Weight {  get; set; }
+
+
+
+        public NasdaqCompany(string symbol, string name)
+        {
+            Symbol = (symbol ?? "").ToUpper(); // jeśli null, ustaw pusty string
+            Name = name ?? "";
+        }
+    }
+}
