@@ -83,7 +83,7 @@ namespace NasdaqChecker
             MarketCapDataTimestamp = DateTime.Now;
         }
 
-        public static void CalculateWeights(List<NasdaqCompany> companies)
+        public void CalculateWeights(List<NasdaqCompany> companies)
         {
             double totalMarketCap = companies.Sum(c => c.MarketCap);
             foreach (var company in companies)
