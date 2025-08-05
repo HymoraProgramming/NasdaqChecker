@@ -23,8 +23,10 @@ namespace NasdaqChecker
 
             var cached = await CacheHelper.LoadFromCacheAsync<List<NasdaqCompany>>(cachePath, TimeSpan.FromDays(1), ts => NasdaqDataTimestamp = ts);
             if (cached != null && cached.Any())
+            {
                 NasdaqDataTimestamp = File.GetLastWriteTime(cachePath);
                 return cached;
+            }
 
             string url = $"https://financialmodelingprep.com/api/v3/nasdaq_constituent?apikey={_apiKey}";
             var response = await _client.GetAsync(url);
