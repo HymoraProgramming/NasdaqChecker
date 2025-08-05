@@ -1,9 +1,4 @@
 ﻿using NasdaqChecker;
-using System;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Collections.Generic;
-using ConsoleTables;
 
 class Program
 {
@@ -57,7 +52,7 @@ class Program
                 continue;
             }
 
-                string inputUpper = input.ToUpper();
+            string inputUpper = input.ToUpper();
 
             var match = companies.FirstOrDefault(c => c.Symbol == inputUpper || c.Name.ToUpper().Contains(inputUpper));
 
