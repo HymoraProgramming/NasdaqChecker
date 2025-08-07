@@ -56,33 +56,48 @@ namespace NasdaqChecker
                 return;
             }
 
-            //var httpClient = _client;
-
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-            var tasks = companies.Select(async company =>
+            string joinedSymbols = string.Join(",", companies.Select(c => c.Symbol));
+
+            string url = $"https://financialmodelingprep.com/api/v3/profile/{joinedSymbols}?apikey={_apiKey}";
+
+            var json = await _client.GetStringAsync(url);
+
+            var profiles = JsonSerializer.Deserialize<List<CompanyProfile>>(json, options);
+
+            var profileDict = profiles?.ToDictionary(p => p.symbol, StringComparer.OrdinalIgnoreCase) ?? new();
+
+            foreach (var company in companies)
             {
-                try
-                {
-                    string url = $"https://financialmodelingprep.com/api/v3/profile/{company.Symbol}?apikey={_apiKey}";
-                    var json = await _client.GetStringAsync(url);
-                    var profiles = JsonSerializer.Deserialize<List<CompanyProfile>>(json, options);
-                    //if (profiles != null && profiles.Count > 0)
-                    //    company.MarketCap = profiles[0].mktCap;
-                    //else
-                    //    company.MarketCap = 0;
-                    company.MarketCap = profiles?.FirstOrDefault()?.mktCap ?? 0;
-
-                }
-                catch
-                {
+                if (profileDict.TryGetValue(company.Symbol, out var profile))
+                    company.MarketCap = profile.mktCap;
+                else
                     company.MarketCap = 0;
-                }
-            });
+            }
 
-            await Task.WhenAll(tasks);
             await CacheHelper.SaveToCacheAsync(cachePath, companies);
             MarketCapDataTimestamp = DateTime.Now;
+
+            //var tasks = companies.Select(async company =>
+            //{
+            //    try
+            //    {
+            //        string url = $"https://financialmodelingprep.com/api/v3/profile/{company.Symbol}?apikey={_apiKey}";
+            //        var json = await _client.GetStringAsync(url);
+            //        var profiles = JsonSerializer.Deserialize<List<CompanyProfile>>(json, options);
+            //        company.MarketCap = profiles?.FirstOrDefault()?.mktCap ?? 0;
+
+            //    }
+            //    catch
+            //    {
+            //        company.MarketCap = 0;
+            //    }
+            //});
+
+            //await Task.WhenAll(tasks);
+            //await CacheHelper.SaveToCacheAsync(cachePath, companies);
+            //MarketCapDataTimestamp = DateTime.Now;
         }
 
         public void CalculateWeights(List<NasdaqCompany> companies)
