@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace NasdaqChecker
+namespace NasdaqChecker.Utils
 {
     public static class CacheHelper
     {

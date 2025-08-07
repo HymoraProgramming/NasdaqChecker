@@ -1,12 +1,30 @@
-﻿using NasdaqChecker;
+﻿using NasdaqChecker.Models;
+using NasdaqChecker.Services.Api;
+using NasdaqChecker.Presentation;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Configuration;
 
 class Program
 {
     static async Task Main()
     {
-        var api = new NasdaqApi();
+        // Build config
+        var config = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
+            .AddEnvironmentVariables()  // The environmental variable will overwrite the value from the json file
+            .Build();
 
-        Console.WriteLine("Downloading data from the Internet...");
+        var fmpApiKey = config["ApiKeys:FMP_API_KEY"];
+        var earningsApiKey = config["ApiKeys:EARNINGS_API_KEY"];
+
+       //Console.WriteLine("FMP API Key from config: " + config["ApiKeys:FMP_API_KEY"]);
+       //Console.WriteLine("Current environment: " + Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
+
+
+        var api = new NasdaqApi(fmpApiKey);
+
+        Console.WriteLine("Downloading NASDAQ-100 composition...");
         var companies = await api.GetNasdaq100CompaniesAsync();
 
         Console.WriteLine("Downloading company capitalization...");
@@ -23,6 +41,7 @@ class Program
 
         Console.WriteLine("Enter the ticker or company name to check if it belongs to the NASDAQ-100.");
         Console.WriteLine("Type ‘list’ to display a list of all companies.");
+        Console.WriteLine("Type ‘earnings’ to see which NASDAQ-100 companies report earnings today.");
         Console.WriteLine("Type ‘exit’ to quit.");
 
 
@@ -48,6 +67,30 @@ class Program
                 Console.WriteLine("\n List of companies in the NASDAQ 100:\n");
 
                 TablePrinter.PrintCompanyTable(companies);
+
+                continue;
+            }
+
+            if (input.ToLower() == "earnings")
+            {
+                var earningsService = new EarningsReportService(earningsApiKey);
+
+                var earningsToday = await earningsService.GetTodayReportsForAsync(companies);
+
+                if (earningsToday.Count == 0)
+                {
+                    Console.WriteLine("Today, no NASDAQ-100 companies are reporting earnings.");
+                }
+                else
+                {
+                    Console.WriteLine("Today's earnings reports (NASDAQ-100):");
+                    foreach (var report in earningsToday)
+                    {
+                        //Console.WriteLine($"- {report.Symbol} ({report.Company}) at {report.Time} | Est. EPS: {report.EstimatedEPS} | Actual EPS: {report.EPS}");
+                        Console.WriteLine($"- {report.Symbol} ({report.Company}) at {report.Time} | Est. EPS: {(report.EstimatedEPS?.ToString("F2") ?? "N/A")} | Actual EPS: {(report.EPS?.ToString("F2") ?? "N/A")}");
+
+                    }
+                }
 
                 continue;
             }

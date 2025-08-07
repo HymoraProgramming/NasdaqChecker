@@ -1,10 +1,11 @@
-﻿using System;
+﻿using NasdaqChecker.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NasdaqChecker
+namespace NasdaqChecker.Presentation
 {
     public static class TablePrinter
     {
@@ -15,7 +16,7 @@ namespace NasdaqChecker
             int symbolWidth = 6;
             int nameWidth = nameMaxLength;
             int capWidth = 20;
-            int weightWidth = 8;
+            int weightWidth = 11;
 
             string horizontal = "+" +
                 new string('-', lpWidth + 2) + "+" +
@@ -25,7 +26,7 @@ namespace NasdaqChecker
                 new string('-', weightWidth + 2) + "+";
 
             Console.WriteLine(horizontal);
-            Console.WriteLine($"| {"Lp.".PadRight(lpWidth)} | {"Ticker".PadRight(symbolWidth)} | {"Name".PadRight(nameWidth)} | {"Market Cap ($)".PadRight(capWidth)} | {"Weight (%)".PadRight(weightWidth)} |");
+            Console.WriteLine($"| {"No..".PadRight(lpWidth)} | {"Ticker".PadRight(symbolWidth)} | {"Name".PadRight(nameWidth)} | {"Market Cap ($)".PadRight(capWidth)} | {"Weight (%)".PadRight(weightWidth)} |");
             Console.WriteLine(horizontal);
 
             int i = 1;

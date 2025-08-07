@@ -1,4 +1,4 @@
-# NasdaqChecker
+﻿# NasdaqChecker
 
 A simple C# console application that fetches and displays the market capitalization of companies listed in the **NASDAQ-100** index.
 
@@ -31,3 +31,20 @@ A simple C# console application that fetches and displays the market capitalizat
    ```bash
    git clone https://github.com/HymoraProgramming/NasdaqChecker.git
    cd NasdaqChecker
+
+## API Keys
+
+Create a file named `appsettings.Development.json` in the root of the project with the following structure:
+
+```json
+{
+  "ApiKeys": {
+    "FMP_API_KEY": "your_fmp_api_key_here",
+    "EARNINGS_API_KEY": "your_earnings_api_key_here"
+  }
+}
+
+Then set its properties in Visual Studio:
+
+Right-click the file → Properties → Copy to Output Directory → Copy if newer
+

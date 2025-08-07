@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NasdaqChecker
+namespace NasdaqChecker.Models
 {
     public class NasdaqCompany
     {

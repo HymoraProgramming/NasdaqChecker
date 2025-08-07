@@ -5,8 +5,10 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.IO;
+using NasdaqChecker.Models;
+using NasdaqChecker.Utils;
 
-namespace NasdaqChecker
+namespace NasdaqChecker.Services.Api
 {
     public class NasdaqApi
     {
@@ -15,7 +17,12 @@ namespace NasdaqChecker
 
         private readonly HttpClient _client = new HttpClient();
 
-        private readonly string _apiKey = Environment.GetEnvironmentVariable("FMP_API_KEY") ?? throw new InvalidOperationException("Missing API key");
+        private readonly string _apiKey;
+
+        public NasdaqApi(string apiKey)
+        {
+            _apiKey = apiKey ?? throw new ArgumentNullException(nameof(apiKey), "Missing FMP API key");
+        }
 
         public async Task<List<NasdaqCompany>> GetNasdaq100CompaniesAsync()
         {
@@ -73,10 +80,8 @@ namespace NasdaqChecker
                 else
                     company.MarketCap = 0;
             }
-
             await CacheHelper.SaveToCacheAsync(cachePath, companies);
             MarketCapDataTimestamp = DateTime.Now;
-
         }
 
         public void CalculateWeights(List<NasdaqCompany> companies)
@@ -84,15 +89,13 @@ namespace NasdaqChecker
             double totalMarketCap = companies.Sum(c => c.MarketCap);
             foreach (var company in companies)
             {
-                company.Weight = totalMarketCap > 0 ? (company.MarketCap / totalMarketCap) * 100 : 0;
+                company.Weight = totalMarketCap > 0 ? company.MarketCap / totalMarketCap * 100 : 0;
             }
         }
-
     }
 
     public class CompanyProfile
     {
-
         public string symbol { get; set; }
         public double mktCap { get; set; }
         public string companyName { get; set; }
