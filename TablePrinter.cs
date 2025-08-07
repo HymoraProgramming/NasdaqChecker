@@ -25,7 +25,7 @@ namespace NasdaqChecker
                 new string('-', weightWidth + 2) + "+";
 
             Console.WriteLine(horizontal);
-            Console.WriteLine($"| {"Lp.".PadRight(lpWidth)} | {"Symbol".PadRight(symbolWidth)} | {"Nazwa".PadRight(nameWidth)} | {"Market Cap ($)".PadRight(capWidth)} | {"Waga (%)".PadRight(weightWidth)} |");
+            Console.WriteLine($"| {"Lp.".PadRight(lpWidth)} | {"Ticker".PadRight(symbolWidth)} | {"Name".PadRight(nameWidth)} | {"Market Cap ($)".PadRight(capWidth)} | {"Weight (%)".PadRight(weightWidth)} |");
             Console.WriteLine(horizontal);
 
             int i = 1;

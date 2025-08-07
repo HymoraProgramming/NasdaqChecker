@@ -5,36 +5,36 @@ class Program
     static async Task Main()
     {
         var api = new NasdaqApi();
-        Console.WriteLine("Pobieranie danych z internetu...");
+
+        Console.WriteLine("Downloading data from the Internet...");
         var companies = await api.GetNasdaq100CompaniesAsync();
 
-        Console.WriteLine("Pobieranie kapitalizacji spółek...");
+        Console.WriteLine("Downloading company capitalization...");
         await api.FetchMarketCapsAsync(companies);
 
-        Console.WriteLine("Obliczanie wag...");
+        Console.WriteLine("Calculating weights...");
         api.CalculateWeights(companies);
 
-        Console.WriteLine("\nŹródło danych: Financial Modeling Prep API (https://financialmodelingprep.com/)");
-        Console.WriteLine($"Dane o składzie NASDAQ-100 z: {api.NasdaqDataTimestamp}");
-        Console.WriteLine($"Dane o kapitalizacji rynkowej z: {api.MarketCapDataTimestamp}");
+        Console.WriteLine("\nData source: Financial Modeling Prep API (https://financialmodelingprep.com/)");
+        Console.WriteLine($"NASDAQ-100 index data from: {api.NasdaqDataTimestamp}");
+        Console.WriteLine($"Market capitalization data from: {api.MarketCapDataTimestamp}");
 
-        Console.WriteLine("Gotowe!\n");
+        Console.WriteLine("Done!\n");
 
-        Console.WriteLine("Wpisz ticker lub nazwę spółki, aby sprawdzić, czy należy do NASDAQ-100.");
-        Console.WriteLine("Wpisz 'exit', aby zakończyć.");
-        Console.WriteLine("Wpisz 'list', aby wyświetlić listę wszystkich spółek.");
+        Console.WriteLine("Enter the ticker or company name to check if it belongs to the NASDAQ-100.");
+        Console.WriteLine("Type ‘list’ to display a list of all companies.");
+        Console.WriteLine("Type ‘exit’ to quit.");
 
 
 
         while (true)
         {
-            // Mogłoby być Console.WriteLine(); zamiast \n
-            Console.Write("\nSpółka: ");
+            Console.Write("\nCompany: ");
             var input = Console.ReadLine();
 
             if (string.IsNullOrWhiteSpace(input))
             {
-                Console.WriteLine("Nie wpisano żadnej wartości.");
+                Console.WriteLine("No value entered.");
                 continue;
             }
 
@@ -45,7 +45,7 @@ class Program
 
             if (input.ToLower() == "list")
             {
-                Console.WriteLine("\n Lista spółek w NASDAQ 100:\n");
+                Console.WriteLine("\n List of companies in the NASDAQ 100:\n");
 
                 TablePrinter.PrintCompanyTable(companies);
 
@@ -58,14 +58,14 @@ class Program
 
             if (match != null)
             {
-                Console.WriteLine($"{match.Name} ({match.Symbol}) należy do NASDAQ-100 (${match.MarketCap.ToString("N0")} Market Cap - {match.Weight.ToString("F2")}% wartości indeksu).");
+                Console.WriteLine($"{match.Name} ({match.Symbol}) is part of the NASDAQ-100 (${match.MarketCap.ToString("N0")} Market Cap - {match.Weight.ToString("F2")}% of index value).");
             }
             else
             {
-                Console.WriteLine("Podana spółka nie znajduje się w NASDAQ-100.");
+                Console.WriteLine("The company is not listed on the NASDAQ-100.");
             }
         }
 
-        Console.WriteLine("Do widzenia!");
+        Console.WriteLine("Bye!");
     }
 }

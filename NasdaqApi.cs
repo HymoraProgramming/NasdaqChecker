@@ -15,7 +15,7 @@ namespace NasdaqChecker
 
         private readonly HttpClient _client = new HttpClient();
 
-        private readonly string _apiKey = Environment.GetEnvironmentVariable("FMP_API_KEY") ?? throw new InvalidOperationException("Brak klucza API");
+        private readonly string _apiKey = Environment.GetEnvironmentVariable("FMP_API_KEY") ?? throw new InvalidOperationException("Missing API key");
 
         public async Task<List<NasdaqCompany>> GetNasdaq100CompaniesAsync()
         {
@@ -31,8 +31,6 @@ namespace NasdaqChecker
             string url = $"https://financialmodelingprep.com/api/v3/nasdaq_constituent?apikey={_apiKey}";
             var response = await _client.GetAsync(url);
             response.EnsureSuccessStatusCode();
-
-            //using var stream = await response.Content.ReadAsStreamAsync();
 
             var json = await response.Content.ReadAsStringAsync();
             var companies = JsonSerializer.Deserialize<List<NasdaqCompany>>(json,
@@ -79,25 +77,6 @@ namespace NasdaqChecker
             await CacheHelper.SaveToCacheAsync(cachePath, companies);
             MarketCapDataTimestamp = DateTime.Now;
 
-            //var tasks = companies.Select(async company =>
-            //{
-            //    try
-            //    {
-            //        string url = $"https://financialmodelingprep.com/api/v3/profile/{company.Symbol}?apikey={_apiKey}";
-            //        var json = await _client.GetStringAsync(url);
-            //        var profiles = JsonSerializer.Deserialize<List<CompanyProfile>>(json, options);
-            //        company.MarketCap = profiles?.FirstOrDefault()?.mktCap ?? 0;
-
-            //    }
-            //    catch
-            //    {
-            //        company.MarketCap = 0;
-            //    }
-            //});
-
-            //await Task.WhenAll(tasks);
-            //await CacheHelper.SaveToCacheAsync(cachePath, companies);
-            //MarketCapDataTimestamp = DateTime.Now;
         }
 
         public void CalculateWeights(List<NasdaqCompany> companies)

@@ -16,9 +16,6 @@ namespace NasdaqChecker
             var json = await File.ReadAllTextAsync(path);
 
             var wrapper = JsonSerializer.Deserialize<CachedData<T>>(json);
-            //var fileInfo = new FileInfo(path);
-
-            //if(DateTime.Now - fileInfo.LastWriteTime > validFor) return default;
 
             if (wrapper == null || DateTime.Now - wrapper.Timestamp > validFor) return default;
 
@@ -40,10 +37,6 @@ namespace NasdaqChecker
             await File.WriteAllTextAsync(path, json);
         }
 
-        //public static DateTime GetCacheTimestamp(string path)
-        //{
-        //    return File.Exists(path) ? File.GetLastWriteTime(path) : DateTime.MinValue;
-        //}
     }
 
     public class CachedData<T>

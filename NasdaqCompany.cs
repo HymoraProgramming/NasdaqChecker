@@ -17,7 +17,7 @@ namespace NasdaqChecker
 
         public NasdaqCompany(string symbol, string name)
         {
-            Symbol = (symbol ?? "").ToUpper(); // jeśli null, ustaw pusty string
+            Symbol = (symbol ?? "").ToUpper(); // if null, set empty string
             Name = name ?? "";
         }
     }
